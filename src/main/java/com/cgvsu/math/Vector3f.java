@@ -57,6 +57,25 @@ public class Vector3f {
         return new Vector3f(this.x / scalar, this.y / scalar, this.z / scalar);
     }
 
+    // -------------------------- ДРУГИЕ МЕТОДЫ --------------------
+    // Длина вектора
+    public float length() {
+        return (float) Math.sqrt(x * x + y * y + z * z);
+    }
+    // Нормализация вектора
+    public Vector3f normalize() {
+        float len = length();
+        return this.division(len);
+    }
+    // Скалярное произведение
+    public double scalarProduct(Vector3f other) {
+        return this.x * other.x + this.y * other.y + this.z * other.z;
+    }
+    // Векторное произведение
+    public Vector3f vectorProduct(Vector3f other) {
+        return new Vector3f(this.y * other.z - this.z * other.y, this.z * other.x - this.x * other.z, this.x * other.y - this.y * other.x);
+    }
+
     // -------------------------- ВЫВОД ВЕКТОРА --------------------------
     public String toString() {
         return "(" + x + "; " + y + "; " + x + ")";
