@@ -6,8 +6,6 @@ public class Vector3f {
     private float y;
     private float z;
 
-    private final float EPS = 1e-7f;
-
     // ---------------------- КОНСТРУКТОРЫ ----------------------------
     public Vector3f() {
         this(0, 0, 0);
@@ -40,4 +38,34 @@ public class Vector3f {
         this.z = z;
     }
 
+    // ----------------- ОПЕРАЦИИ НАД ВЕКТОРАМИ ----------------------
+    // Сложение
+    public Vector3f addition(Vector3f other) {
+        return new Vector3f(this.x + other.x, this.y + other.y, this.z + other.z);
+    }
+    // Вычитание
+    public Vector3f subtraction(Vector3f other) {
+        return new Vector3f(this.x - other.x, this.y - other.y, this.z - other.z);
+    }
+    // Умножение
+    public Vector3f multiplication(float scalar) {
+        return new Vector3f(this.x * scalar, this.y * scalar, this.z * scalar);
+    }
+    // Деление
+    public Vector3f division(float scalar) {
+        checkDivisionByZero(scalar);
+        return new Vector3f(this.x / scalar, this.y / scalar, this.z / scalar);
+    }
+
+    // -------------------------- ВЫВОД ВЕКТОРА --------------------------
+    public String toString() {
+        return "(" + x + "; " + y + "; " + x + ")";
+    }
+
+    // -------------------------- ОШИБКИ ----------------------------------
+    private static void checkDivisionByZero(float scalar) {
+        if (Math.abs(scalar) < 1e-7f) {
+            throw new ArithmeticException("Деление на ноль не допускается! Получено: " + scalar);
+        }
+    }
 }
