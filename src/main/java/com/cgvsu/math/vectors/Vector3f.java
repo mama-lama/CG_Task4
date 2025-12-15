@@ -1,6 +1,5 @@
 package com.cgvsu.math.vectors;
 
-// Это заготовка для собственной библиотеки для работы с линейной алгеброй
 public class Vector3f {
     private float x;
     private float y;
@@ -78,7 +77,7 @@ public class Vector3f {
 
     // -------------------------- ВЫВОД ВЕКТОРА --------------------------
     public String toString() {
-        return "(" + x + "; " + y + "; " + x + ")";
+        return "(" + x + "; " + y + "; " + z + ")";
     }
 
     // -------------------------- ОШИБКИ ----------------------------------

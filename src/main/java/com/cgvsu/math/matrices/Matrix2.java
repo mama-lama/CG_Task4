@@ -1,7 +1,6 @@
 package com.cgvsu.math.matrices;
 
 import com.cgvsu.math.vectors.Vector2f;
-import com.cgvsu.math.vectors.Vector3f;
 
 public class Matrix2 {
     private float[][] data = new float[2][2];

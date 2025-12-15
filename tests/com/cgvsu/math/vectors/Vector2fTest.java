@@ -1,6 +1,5 @@
 package com.cgvsu.math.vectors;
 
-import com.cgvsu.math.vectors.Vector2f;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

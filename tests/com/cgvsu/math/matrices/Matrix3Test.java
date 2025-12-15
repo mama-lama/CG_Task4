@@ -1,6 +1,5 @@
 package com.cgvsu.math.matrices;
 
-import com.cgvsu.math.matrices.Matrix3;
 import com.cgvsu.math.vectors.Vector3f;
 import org.junit.jupiter.api.Test;
 

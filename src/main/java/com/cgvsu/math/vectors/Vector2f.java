@@ -59,7 +59,7 @@ public class Vector2f {
     }
     // Скалярное произведение
     public float scalarProduct(Vector2f other) {
-        return (float) Math.sqrt(this.x * other.x + other.y * this.y);
+        return this.x * other.x + this.y * other.y;
     }
 
     // ---------------------- ВЫВОД ВЕКТОРА -------------------
@@ -69,7 +69,7 @@ public class Vector2f {
 
     // ---------------------- ОШИБКИ --------------------------
     private static void checkDivisionByZero(float scalar) {
-        if (Math.abs(scalar) < 0.0000001) {
+        if (Math.abs(scalar) < 1e-7) {
             throw new ArithmeticException("Деление на ноль не допускается! Получено: " + scalar);
         }
     }

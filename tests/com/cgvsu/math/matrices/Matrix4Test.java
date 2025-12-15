@@ -1,10 +1,7 @@
 package com.cgvsu.math.matrices;
 
-import com.cgvsu.math.matrices.Matrix4;
 import com.cgvsu.math.vectors.Vector4f;
 import org.junit.jupiter.api.Test;
-
-import javax.vecmath.Matrix4f;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
