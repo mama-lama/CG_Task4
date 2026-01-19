@@ -1,6 +1,8 @@
 package com.cgvsu.math.vectors;
 
-public class Vector2f {
+import com.cgvsu.math.vectors.Vector;
+
+public class Vector2f implements Vector<Vector2f> {
     private float x;
     private float y;
 
@@ -11,6 +13,13 @@ public class Vector2f {
     public Vector2f(float x, float y) {
         this.x = x;
         this.y = y;
+    }
+    public Vector2f(float[] components) {
+        if (components.length != 2) {
+            throw new IllegalArgumentException("Vector2f требует 2 компонента");
+        }
+        this.x = components[0];
+        this.y = components[1];
     }
 
     // ---------------- ГЕТЕРЫ ---------------------------
@@ -28,41 +37,57 @@ public class Vector2f {
     public void setY(float newY) {
         this.y = newY;
     }
+    public void set(float newX, float newY) {
+        this.x = newX;
+        this.y = newY;
+    }
+
     // ----------------- ОПЕРАЦИИ НАД ВЕКТОРАМИ ---------------
     // Сложение
-    public Vector2f addition(Vector2f other) {
+    @Override
+    public Vector2f add(Vector2f other) {
         return new Vector2f(this.x + other.x, this.y + other.y);
     }
     // Вычитание
-    public Vector2f subtraction(Vector2f other) {
+    @Override
+    public Vector2f sub(Vector2f other) {
         return new Vector2f(this.x - other.x, this.y - other.y);
     }
     // Умножение на скаляр
-    public Vector2f multiplication(float scalar) {
+    @Override
+    public Vector2f mult(float scalar) {
         return new Vector2f(this.x * scalar, this.y * scalar);
     }
     // Деление на скаляр
-    public Vector2f division(float scalar) {
+    @Override
+    public Vector2f div(float scalar) {
         checkDivisionByZero(scalar);
         return new Vector2f(this.x / scalar, this.y / scalar);
     }
 
     // ---------------------- ДРУГИЕ МЕТОДЫ -------------------
     // Длина вектора
+    @Override
     public float length() {
         return (float) Math.sqrt(x * x + y * y);
     }
     // Нормализация вектора
+    @Override
     public Vector2f normalize() {
         float len = length();
-        return this.division(len);
+        if (Math.abs(len) < 1e-7) {
+            return new Vector2f();
+        }
+        return this.div(len);
     }
     // Скалярное произведение
-    public float scalarProduct(Vector2f other) {
+    @Override
+    public float scalarProd(Vector2f other) {
         return this.x * other.x + this.y * other.y;
     }
 
     // ---------------------- ВЫВОД ВЕКТОРА -------------------
+    @Override
     public String toString() {
         return "(" + x + "; " + y + ")";
     }

@@ -1,6 +1,8 @@
 package com.cgvsu.math.vectors;
 
-public class Vector3f {
+import com.cgvsu.math.vectors.Vector;
+
+public class Vector3f implements Vector<Vector3f> {
     private float x;
     private float y;
     private float z;
@@ -13,6 +15,14 @@ public class Vector3f {
         this.x = x;
         this.y = y;
         this.z = z;
+    }
+    public Vector3f(float[] components) {
+        if (components.length != 3) {
+            throw new IllegalArgumentException("Vector3f требует 3 компонента");
+        }
+        this.x = components[0];
+        this.y = components[1];
+        this.z = components[2];
     }
 
     // ----------------------- ГЕТЕРЫ ---------------------------------
@@ -27,55 +37,71 @@ public class Vector3f {
     }
 
     // ----------------------- СЕТТЕРЫ -----------------------------------
-    public void setX(float x) {
-        this.x = x;
+    public void setX(float newX) {
+        this.x = newX;
     }
-    public void setY(float y) {
-        this.y = y;
+    public void setY(float newY) {
+        this.y = newY;
     }
-    public void setZ(float z) {
-        this.z = z;
+    public void setZ(float newZ) {
+        this.z = newZ;
+    }
+    public void set(float newX, float newY, float newZ) {
+        this.x = newX;
+        this.y = newY;
+        this.z = newZ;
     }
 
     // ----------------- ОПЕРАЦИИ НАД ВЕКТОРАМИ ----------------------
     // Сложение
-    public Vector3f addition(Vector3f other) {
+    @Override
+    public Vector3f add(Vector3f other) {
         return new Vector3f(this.x + other.x, this.y + other.y, this.z + other.z);
     }
     // Вычитание
-    public Vector3f subtraction(Vector3f other) {
+    @Override
+    public Vector3f sub(Vector3f other) {
         return new Vector3f(this.x - other.x, this.y - other.y, this.z - other.z);
     }
     // Умножение
-    public Vector3f multiplication(float scalar) {
+    @Override
+    public Vector3f mult(float scalar) {
         return new Vector3f(this.x * scalar, this.y * scalar, this.z * scalar);
     }
     // Деление
-    public Vector3f division(float scalar) {
+    @Override
+    public Vector3f div(float scalar) {
         checkDivisionByZero(scalar);
         return new Vector3f(this.x / scalar, this.y / scalar, this.z / scalar);
     }
 
     // -------------------------- ДРУГИЕ МЕТОДЫ --------------------
     // Длина вектора
+    @Override
     public float length() {
         return (float) Math.sqrt(x * x + y * y + z * z);
     }
     // Нормализация вектора
+    @Override
     public Vector3f normalize() {
         float len = length();
-        return this.division(len);
+        if (Math.abs(len) < 1e-7) {
+            return new Vector3f();
+        }
+        return this.div(len);
     }
     // Скалярное произведение
-    public float scalarProduct(Vector3f other) {
+    @Override
+    public float scalarProd(Vector3f other) {
         return this.x * other.x + this.y * other.y + this.z * other.z;
     }
     // Векторное произведение
-    public Vector3f vectorProduct(Vector3f other) {
+    public Vector3f vectorProd(Vector3f other) {
         return new Vector3f(this.y * other.z - this.z * other.y, this.z * other.x - this.x * other.z, this.x * other.y - this.y * other.x);
     }
 
     // -------------------------- ВЫВОД ВЕКТОРА --------------------------
+    @Override
     public String toString() {
         return "(" + x + "; " + y + "; " + z + ")";
     }

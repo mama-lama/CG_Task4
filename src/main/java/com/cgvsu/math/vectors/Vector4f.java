@@ -1,6 +1,8 @@
 package com.cgvsu.math.vectors;
 
-public class Vector4f {
+import com.cgvsu.math.vectors.Vector;
+
+public class Vector4f implements Vector<Vector4f> {
     private float x;
     private float y;
     private float z;
@@ -15,6 +17,15 @@ public class Vector4f {
         this.y = y;
         this.z = z;
         this.w = w;
+    }
+    public Vector4f(float[] components) {
+        if (components.length != 4) {
+            throw new IllegalArgumentException("Vector4f требует 4 компонента");
+        }
+        this.x = components[0];
+        this.y = components[1];
+        this.z = components[2];
+        this.w = components[3];
     }
 
     // ---------------------------- ГЕТТЕРЫ -------------------------------
@@ -32,54 +43,71 @@ public class Vector4f {
     }
 
     // ---------------------------- СЕТТЕРЫ -------------------------------
-    public void setX(float x) {
-        this.x = x;
+    public void setX(float newX) {
+        this.x = newX;
     }
-    public void setY(float y) {
-        this.y = y;
+    public void setY(float newY) {
+        this.y = newY;
     }
-    public void setZ(float z) {
-        this.z = z;
+    public void setZ(float newZ) {
+        this.z = newZ;
     }
-    public void setW(float w) {
-        this.w = w;
+    public void setW(float newW) {
+        this.w = newW;
+    }
+    public void set(float newX, float newY, float newZ, float newW) {
+        this.x = newX;
+        this.y = newY;
+        this.z = newZ;
+        this.w = newW;
     }
 
     // ----------------- ОПЕРАЦИИ НАД ВЕКТОРАМИ ----------------------
     // Сложение
-    public Vector4f addition(Vector4f other) {
+    @Override
+    public Vector4f add(Vector4f other) {
         return new Vector4f(this.x + other.x, this.y + other.y, this.z + other.z, this.w + other.w);
     }
     // Вычитание
-    public Vector4f subtraction(Vector4f other) {
+    @Override
+    public Vector4f sub(Vector4f other) {
         return new Vector4f(this.x - other.x, this.y - other.y, this.z - other.z, this.w - other.w);
     }
     // Умножение
-    public Vector4f multiplication(float scalar) {
+    @Override
+    public Vector4f mult(float scalar) {
         return new Vector4f(this.x * scalar, this.y * scalar, this.z * scalar, this.w * scalar);
     }
     // Деление
-    public Vector4f division(float scalar) {
+    @Override
+    public Vector4f div(float scalar) {
         checkDivisionByZero(scalar);
         return new Vector4f(this.x / scalar, this.y / scalar, this.z / scalar, this.w / scalar);
     }
 
     // ------------------------- ДРУГИЕ МЕТОДЫ ----------------------------
     // Длина вектора
+    @Override
     public float length() {
         return (float) Math.sqrt(x * x + y * y + z * z + w * w);
     }
     // Нормализация вектора
+    @Override
     public Vector4f normalize() {
         float len = length();
-        return this.division(len);
+        if (Math.abs(len) < 1e-7) {
+            return new Vector4f();
+        }
+        return this.div(len);
     }
     // Скалярное произведение
-    public float scalarProduct(Vector4f other) {
+    @Override
+    public float scalarProd(Vector4f other) {
         return this.x * other.x + this.y * other.y + this.z * other.z + this.w * other.w;
     }
 
     // ------------------------- ВЫВОД -------------------------------------
+    @Override
     public String toString() {
         return "(" + x + "; " + y + "; " + z + "; " + w + ")";
     }

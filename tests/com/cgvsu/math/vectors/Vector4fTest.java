@@ -1,5 +1,6 @@
 package com.cgvsu.math.vectors;
 
+import com.cgvsu.math.vectors.Vector4f;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,7 +23,7 @@ public class Vector4fTest {
         System.out.println("Vector4f: Тестирование сложения векторов...");
         Vector4f v1 = new Vector4f(1, 2, 3, 4);
         Vector4f v2 = new Vector4f(5, 6, 7, 8);
-        Vector4f result = v1.addition(v2);
+        Vector4f result = v1.add(v2);
 
         assertEquals(6.0, result.getX(), 0.0001);
         assertEquals(8.0, result.getY(), 0.0001);
@@ -36,7 +37,7 @@ public class Vector4fTest {
         System.out.println("Vector4f: Тестирование вычитания векторов...");
         Vector4f v1 = new Vector4f(5, 6, 7, 8);
         Vector4f v2 = new Vector4f(1, 2, 3, 4);
-        Vector4f result = v1.subtraction(v2);
+        Vector4f result = v1.sub(v2);
 
         assertEquals(4.0, result.getX(), 0.0001);
         assertEquals(4.0, result.getY(), 0.0001);
@@ -49,7 +50,7 @@ public class Vector4fTest {
     public void testMultiplicationByScalar() {
         System.out.println("Vector4f: Тестирование умножения вектора на скаляр...");
         Vector4f v = new Vector4f(1, 2, 3, 4);
-        Vector4f result = v.multiplication(2);
+        Vector4f result = v.mult(2);
 
         assertEquals(2.0, result.getX(), 0.0001);
         assertEquals(4.0, result.getY(), 0.0001);
@@ -62,7 +63,7 @@ public class Vector4fTest {
     public void testDivisionByScalar() {
         System.out.println("Vector4f: Тестирование деления вектора на скаляр...");
         Vector4f v = new Vector4f(2, 4, 6, 8);
-        Vector4f result = v.division(2);
+        Vector4f result = v.div(2);
 
         assertEquals(1.0, result.getX(), 0.0001);
         assertEquals(2.0, result.getY(), 0.0001);
@@ -98,7 +99,7 @@ public class Vector4fTest {
         System.out.println("Vector2: Тестирование скалярного произведения...");
         Vector4f v1 = new Vector4f(1, 2, 3, 4);
         Vector4f v2 = new Vector4f(5, 6, 7, 8);
-        double result = v1.scalarProduct(v2);
+        double result = v1.scalarProd(v2);
         assertEquals(70.0, result, 0.0001);
     }
 

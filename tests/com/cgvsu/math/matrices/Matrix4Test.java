@@ -1,16 +1,18 @@
 package com.cgvsu.math.matrices;
 
 import com.cgvsu.math.vectors.Vector4f;
+import com.cgvsu.math.matrices.Matrix4;
+
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Matrix4Test {
-    // Единичная матрица
+
     @Test
     public void testIdentityMatrix() {
         System.out.println("Matrix4: Тестирование создания единичной матрицы...");
-        Matrix4 identity = Matrix4.identityMatrix();
+        Matrix4 identity = new Matrix4().identity();
 
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
@@ -20,11 +22,10 @@ public class Matrix4Test {
         }
     }
 
-    // Нулевая матрица
     @Test
     public void testZeroMatrix() {
         System.out.println("Matrix4: Тестирование создания нулевой матрицы...");
-        Matrix4 zero = Matrix4.zeroMatrix();
+        Matrix4 zero = new Matrix4().zero();
 
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
@@ -33,7 +34,6 @@ public class Matrix4Test {
         }
     }
 
-    // Сложение
     @Test
     public void testAddition() {
         System.out.println("Matrix4: Тестирование сложения матриц...");
@@ -52,14 +52,13 @@ public class Matrix4Test {
 
         Matrix4 m1 = new Matrix4(data1);
         Matrix4 m2 = new Matrix4(data2);
-        Matrix4 result = m1.addition(m2);
+        Matrix4 result = m1.add(m2);
 
         assertEquals(17.0, result.get(0, 0), 0.0001);
         assertEquals(17.0, result.get(3, 3), 0.0001);
-        assertEquals(17.0, result.get(0, 1), 0.0001); // 2 + 15 = 17
+        assertEquals(17.0, result.get(0, 1), 0.0001);
     }
 
-    // Вычитание
     @Test
     public void testSubtraction() {
         System.out.println("Matrix4: Тестирование вычитания...");
@@ -78,14 +77,13 @@ public class Matrix4Test {
 
         Matrix4 m1 = new Matrix4(data1);
         Matrix4 m2 = new Matrix4(data2);
-        Matrix4 result = m1.subtraction(m2);
+        Matrix4 result = m1.sub(m2);
 
         assertEquals(9.0, result.get(0, 0), 0.0001);
         assertEquals(8.0, result.get(0, 1), 0.0001);
         assertEquals(-6.0, result.get(3, 3), 0.0001);
     }
 
-    // Умножение на вектор
     @Test
     public void testMultiplicationWithVector() {
         System.out.println("Matrix4: Тестирование умножения матрицы на вектор...");
@@ -98,15 +96,14 @@ public class Matrix4Test {
 
         Matrix4 m = new Matrix4(data);
         Vector4f v = new Vector4f(1, 2, 3, 4);
-        Vector4f result = m.multiplication(v);
+        Vector4f result = m.mult(v);
 
-        assertEquals(30.0, result.getX(), 0.0001); // 1*1 + 2*2 + 3*3 + 4*4 = 30
-        assertEquals(70.0, result.getY(), 0.0001); // 5*1 + 6*2 + 7*3 + 8*4 = 70
-        assertEquals(110.0, result.getZ(), 0.0001); // 9*1 + 10*2 + 11*3 + 12*4 = 110
-        assertEquals(150.0, result.getW(), 0.0001); // 13*1 + 14*2 + 15*3 + 16*4 = 150
+        assertEquals(30.0, result.getX(), 0.0001);
+        assertEquals(70.0, result.getY(), 0.0001);
+        assertEquals(110.0, result.getZ(), 0.0001);
+        assertEquals(150.0, result.getW(), 0.0001);
     }
 
-    // Умножение на матрицу
     @Test
     public void testMatrixMultiplication() {
         System.out.println("Matrix4: Тестирование умножения матрицы на матрицу...");
@@ -125,14 +122,13 @@ public class Matrix4Test {
 
         Matrix4 m1 = new Matrix4(data1);
         Matrix4 m2 = new Matrix4(data2);
-        Matrix4 result = m1.multiplication(m2);
+        Matrix4 result = m1.mult(m2);
 
         assertEquals(80.0, result.get(0, 0), 0.0001);
         assertEquals(214.0, result.get(1, 1), 0.0001);
         assertEquals(386.0, result.get(3, 3), 0.0001);
     }
 
-    // Транспозиция
     @Test
     public void testTransposition() {
         System.out.println("Matrix4: Тестирование транспозиции...");
@@ -144,9 +140,8 @@ public class Matrix4Test {
         };
 
         Matrix4 m = new Matrix4(data);
-        Matrix4 transposed = m.transposition();
+        Matrix4 transposed = m.trans();
 
-        // Проверяем симметричность транспонирования
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 assertEquals(m.get(i, j), transposed.get(j, i), 0.0001);
@@ -154,7 +149,6 @@ public class Matrix4Test {
         }
     }
 
-    // Умножение на единичную матрицу
     @Test
     public void testMultiplicationWithIdentity() {
         System.out.println("Matrix4: Тестирование умножения матрицы на единичную матрицу...");
@@ -166,10 +160,9 @@ public class Matrix4Test {
         };
 
         Matrix4 m = new Matrix4(data);
-        Matrix4 identity = Matrix4.identityMatrix();
-        Matrix4 result = m.multiplication(identity);
+        Matrix4 identity = new Matrix4().identity();
+        Matrix4 result = m.mult(identity);
 
-        // Умножение на единичную матрицу должно дать ту же матрицу
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 assertEquals(m.get(i, j), result.get(i, j), 0.0001);
