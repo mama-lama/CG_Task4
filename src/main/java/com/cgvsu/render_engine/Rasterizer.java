@@ -106,6 +106,44 @@ public final class Rasterizer {
         return (px - ax) * (by - ay) - (py - ay) * (bx - ax);
     }
 
+    public static void rasterizeLine(
+            Vertex v0,
+            Vertex v1,
+            int width,
+            int height,
+            int[] colorBuffer,
+            float[] depthBuffer,
+            int color) {
+        float dx = v1.x - v0.x;
+        float dy = v1.y - v0.y;
+        float dz = v1.z - v0.z;
+        int steps = (int) Math.max(Math.abs(dx), Math.abs(dy));
+        if (steps == 0) {
+            return;
+        }
+        float stepX = dx / steps;
+        float stepY = dy / steps;
+        float stepZ = dz / steps;
+
+        float x = v0.x;
+        float y = v0.y;
+        float z = v0.z;
+        for (int i = 0; i <= steps; i++) {
+            int px = Math.round(x);
+            int py = Math.round(y);
+            if (px >= 0 && px < width && py >= 0 && py < height) {
+                int index = py * width + px;
+                if (z < depthBuffer[index]) {
+                    depthBuffer[index] = z;
+                    colorBuffer[index] = color;
+                }
+            }
+            x += stepX;
+            y += stepY;
+            z += stepZ;
+        }
+    }
+
     private static int applyLighting(int argb, float intensity) {
         int a = (argb >> 24) & 0xFF;
         int r = (argb >> 16) & 0xFF;
