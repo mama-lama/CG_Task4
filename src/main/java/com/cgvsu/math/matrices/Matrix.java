@@ -8,6 +8,7 @@ public interface Matrix<T extends Matrix<T, V>, V> {
     V mult(V vector);
     T trans();
 
+    // Создание матриц
     T identity();
     T zero();
 
