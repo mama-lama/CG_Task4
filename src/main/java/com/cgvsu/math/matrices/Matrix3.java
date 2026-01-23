@@ -172,6 +172,7 @@ public class Matrix3 implements Matrix<Matrix3, Vector3f> {
 
     // Вырезать матрицу 3х3 из 4х4
     public static Matrix3 fromMatrix4UpperLeft(Matrix4 m4) {
+        checkNullMatrix(m4); // По идее никогда не вызовется, но перестраховка не будет лишней
         float[][] result = new float[3][3];
 
         for (int i = 0; i < 3; i++) {
@@ -226,10 +227,17 @@ public class Matrix3 implements Matrix<Matrix3, Vector3f> {
     }
 
     // ---------------------------- ОШИБКИ ---------------------------------
-    // Null матрица в конструкторе
+    // Null матрица (массив)
     private static void checkNullMatrix(float[][] data) {
         if (data == null) {
             throw new IllegalArgumentException("Матрица не может быть null");
+        }
+    }
+
+    // Null матрица (Matrix4)
+    private static void checkNullMatrix(Matrix4 m4) {
+        if (m4 == null) {
+            throw new IllegalArgumentException("Матрица Matrix4 не может быть null");
         }
     }
 
