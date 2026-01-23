@@ -1,79 +1,87 @@
 package com.cgvsu.math;
+
+import com.cgvsu.math.matrices.Matrix4;
 import com.cgvsu.model.Model;
 import com.cgvsu.math.vectors.Vector3f;
 
-import java.util.ArrayList;
-
-public class AffineTransformations {
-    public static void scale(ArrayList<Vector3f> vertices, float scaleX, float scaleY, float scaleZ) {
-        for (Vector3f vertex : vertices) {
-            vertex.setX(vertex.getX() * scaleX);
-            vertex.setY(vertex.getY() * scaleY);
-            vertex.setZ(vertex.getZ() * scaleZ);
-        }
+public class AffineTransformer {
+    // ----------------- БАЗОВЫЕ ОПЕРАЦИИ -----------------------
+    /**
+     * Перемещение
+     * @param v3 вектор, на который надо переместить
+     * @return матрица 4х4
+     */
+    public static Matrix4 translation(Vector3f v3) {
+        return new Matrix4(
+                1, 0, 0, v3.getX(),
+                0, 1, 0, v3.getY(),
+                0, 0, 1, v3.getZ(),
+                0, 0, 0, 1
+        );
     }
 
-    public static void translate(ArrayList<Vector3f> vertices, float offsetX, float offsetY, float offsetZ) {
-        for (Vector3f vertex : vertices) {
-            vertex.setX(vertex.getX() + offsetX);
-            vertex.setY(vertex.getY() + offsetY);
-            vertex.setZ(vertex.getZ() + offsetZ);
-        }
+    /**
+     * Растягивание
+     * @param v3 вектор, на который надо растянуть
+     * @return матрица 4х4
+     */
+    public static Matrix4 scale(Vector3f v3) {
+        return new Matrix4(
+                v3.getX(), 0, 0, 0,
+                0, v3.getY(), 0, 0,
+                0, 0, v3.getZ(), 0,
+                0, 0, 0, 1
+        );
     }
 
-    // Вспомогательный метод для поворота точки вокруг оси X
-    public static void rotate(Model model, float angleX, float angleY, float angleZ) {
-        // Поворот вершин
-        for (int i = 0; i < model.vertices.size(); i++) {
-            Vector3f rotatedVertex = rotatePoint(model.vertices.get(i), angleX, angleY, angleZ);
-            model.vertices.set(i, rotatedVertex);
-        }
+    /**
+     * Поворот вокруг оси X
+     * @param angleRad угол поворота в радианах
+     * @return матрица 4х4
+     */
+    public static Matrix4 rotationX(float angleRad) {
+        float cosA = MathUtil.cos(angleRad);
+        float sinA = MathUtil.sin(angleRad);
+
+        return new Matrix4(
+                1, 0, 0, 0,
+                0, cosA, -sinA, 0,
+                0, sinA, cosA, 0,
+                0, 0, 0, 1
+        );
     }
 
-    // Вспомогательный метод для поворота точки вокруг осей X, Y и Z
-    private static Vector3f rotatePoint(Vector3f point, float angleX, float angleY, float angleZ) {
-        // Поворот вокруг оси X
-        point = rotateX(point, angleX);
+    /**
+     * Поворот вокруг оси Y
+     * @param angleRad угол поворота в радианах
+     * @return матрица 4х4
+     */
+    public static Matrix4 rotationY(float angleRad) {
+        float cosA = MathUtil.cos(angleRad);
+        float sinA = MathUtil.sin(angleRad);
 
-        // Поворот вокруг оси Y
-        point = rotateY(point, angleY);
-
-        // Поворот вокруг оси Z
-        point = rotateZ(point, angleZ);
-
-        return point;
+        return new Matrix4(
+                cosA, 0, sinA, 0,
+                0, 1, 0, 0,
+                -sinA, 0, cosA, 0,
+                0, 0, 0, 1
+        );
     }
 
-    // Вспомогательный метод для поворота точки вокруг оси X
-    public static Vector3f rotateX(Vector3f point, float angle) {
-        float sinA = (float) Math.sin(angle);
-        float cosA = (float) Math.cos(angle);
+    /**
+     * Поворот вокруг оси Z
+     * @param angleRad угол поворота в радианах
+     * @return матрица 4х4
+     */
+    public static Matrix4 rotationZ(float angleRad) {
+        float cosA = MathUtil.cos(angleRad);
+        float sinA = MathUtil.sin(angleRad);
 
-        float y = point.getY() * cosA - point.getZ() * sinA;
-        float z = point.getY() * sinA + point.getZ() * cosA;
-
-        return new Vector3f(point.getX(), y, z);
-    }
-
-    // Вспомогательный метод для поворота точки вокруг оси Y
-    public static Vector3f rotateY(Vector3f point, float angle) {
-        float sinA = (float) Math.sin(angle);
-        float cosA = (float) Math.cos(angle);
-
-        float x = point.getX() * cosA + point.getZ() * sinA;
-        float z = -point.getX() * sinA + point.getZ() * cosA;
-
-        return new Vector3f(x, point.getY(), z);
-    }
-
-    // Вспомогательный метод для поворота точки вокруг оси Z
-    public static Vector3f rotateZ(Vector3f point, float angle) {
-        float sinA = (float) Math.sin(angle);
-        float cosA = (float) Math.cos(angle);
-
-        float x = point.getX() * cosA - point.getY() * sinA;
-        float y = point.getX() * sinA + point.getY() * cosA;
-
-        return new Vector3f(x, y, point.getZ());
+        return new Matrix4(
+                cosA, -sinA, 0, 0,
+                sinA, cosA, 0, 0,
+                0, 0, 1, 0,
+                0, 0, 0, 1
+        );
     }
 }
