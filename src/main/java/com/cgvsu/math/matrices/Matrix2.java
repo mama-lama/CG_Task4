@@ -161,7 +161,7 @@ public class Matrix2 implements Matrix<Matrix2, Vector2f> {
     // Детерминант матрицы
     public float det() {
         float a = data[0][0], b = data[0][1];
-        float d = data[1][0], e = data[1][1];
+        float d = data[0][0], e = data[0][1];
         return a * e - b * d;
     }
 

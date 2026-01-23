@@ -1,5 +1,6 @@
 package com.cgvsu.math.matrices;
 
+import com.cgvsu.math.vectors.Vector3f;
 import com.cgvsu.math.vectors.Vector4f;
 
 public class Matrix4 implements Matrix<Matrix4, Vector4f> {
@@ -227,8 +228,8 @@ public class Matrix4 implements Matrix<Matrix4, Vector4f> {
         float s = (float) Math.sin(a);
 
         result[1][1] = c;
-        result[1][2] = -s;
-        result[2][1] = s;
+        result[1][2] = s;
+        result[2][1] = -s;
         result[2][2] = c;
 
         return new Matrix4(result);
@@ -251,6 +252,8 @@ public class Matrix4 implements Matrix<Matrix4, Vector4f> {
 
         return new Matrix4(result);
     }
+
+
 
     // ------------------------- ВЫВОД МАТРИЦЫ -----------------------------------
     @Override

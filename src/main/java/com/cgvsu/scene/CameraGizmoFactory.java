@@ -11,6 +11,7 @@ public final class CameraGizmoFactory {
     }
 
     public static Model createGizmo() {
+        // Ксюня: гизмос камеры — простая модель для отображения на сцене (пункт 16).
         Model model = new Model();
         model.vertices.add(new Vector3f(0, 0, 0));
         model.vertices.add(new Vector3f(-0.5f, -0.3f, 1.0f));
@@ -28,14 +29,14 @@ public final class CameraGizmoFactory {
         return model;
     }
 
-    public static Model createGizmoAt(javax.vecmath.Vector3f position, float scale) {
+    public static Model createGizmoAt(Vector3f position, float scale) {
         Model base = createGizmo();
         Model transformed = new Model();
         for (Vector3f vertex : base.vertices) {
             transformed.vertices.add(new Vector3f(
-                    vertex.getX() * scale + position.x,
-                    vertex.getY() * scale + position.y,
-                    vertex.getZ() * scale + position.z));
+                    vertex.getX() * scale + position.getX(),
+                    vertex.getY() * scale + position.getY(),
+                    vertex.getZ() * scale + position.getZ()));
         }
         transformed.polygons = new ArrayList<>(base.polygons);
         return transformed;

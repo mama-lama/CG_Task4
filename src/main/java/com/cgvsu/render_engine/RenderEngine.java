@@ -1,14 +1,13 @@
 package com.cgvsu.render_engine;
 
+import com.cgvsu.math.matrices.Matrix4;
 import com.cgvsu.math.vectors.Vector2f;
 import com.cgvsu.math.vectors.Vector3f;
+import com.cgvsu.math.vectors.Vector4f;
 import com.cgvsu.model.Model;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelFormat;
-import javax.vecmath.Matrix4f;
-import javax.vecmath.Point2f;
-
 import java.util.List;
 
 import static com.cgvsu.render_engine.GraphicConveyor.*;
@@ -55,31 +54,32 @@ public class RenderEngine {
             final int height,
             final Image texture,
             final RenderSettings settings) {
+        // Ксюня: единая точка рендера с режимами (пункт 15).
         if (meshes == null || meshes.isEmpty()) {
             return;
         }
-        Matrix4f viewMatrix = camera.getViewMatrix();
-        Matrix4f projectionMatrix = camera.getProjectionMatrix();
+        Matrix4 viewMatrix = camera.getViewMatrix();
+        Matrix4 projectionMatrix = camera.getProjectionMatrix();
 
         int[] colorBuffer = new int[width * height];
         float[] depthBuffer = new float[width * height];
         Rasterizer.clearBuffers(width, height, colorBuffer, depthBuffer, CLEAR_COLOR);
 
+        // Ксюня: режимы — сетка/текстура/освещение и базовый цвет (пункт 15).
         RenderSettings resolved = settings == null ? defaultSettings() : settings;
         TextureSampler textureSampler = (resolved.isUseTexture() && texture != null)
                 ? new ImageTextureSampler(texture)
                 : null;
-        javax.vecmath.Vector3f cameraPos = camera.getPosition();
+        Vector3f cameraPos = camera.getPosition();
+        // Ксюня: источник света привязан к активной камере (пункт 14).
         Vector3f lightPos = resolved.isUseLighting()
-                ? new Vector3f(cameraPos.x, cameraPos.y, cameraPos.z)
+                ? new Vector3f(cameraPos.getX(), cameraPos.getY(), cameraPos.getZ())
                 : null;
         int baseColor = resolved.getBaseColor();
 
         for (Model mesh : meshes) {
-            Matrix4f modelMatrix = rotateScaleTranslate();
-            Matrix4f modelViewProjectionMatrix = new Matrix4f(modelMatrix);
-            modelViewProjectionMatrix.mul(viewMatrix);
-            modelViewProjectionMatrix.mul(projectionMatrix);
+            Matrix4 modelMatrix = rotateScaleTranslate(new Vector3f(), new Vector3f(), new Vector3f(1, 1, 1));
+            Matrix4 modelViewProjectionMatrix = projectionMatrix.mult(viewMatrix).mult(modelMatrix);
 
             renderSingleModel(
                     mesh,
@@ -108,8 +108,8 @@ public class RenderEngine {
 
     private static void renderSingleModel(
             Model mesh,
-            Matrix4f modelMatrix,
-            Matrix4f modelViewProjectionMatrix,
+            Matrix4 modelMatrix,
+            Matrix4 modelViewProjectionMatrix,
             int width,
             int height,
             int[] colorBuffer,
@@ -118,6 +118,7 @@ public class RenderEngine {
             Vector3f lightPos,
             int baseColor,
             boolean drawWireframe) {
+        // Ксюня: треугольники + Z-буфер + опциональная сетка (пункты 13 и 15).
         final int nPolygons = mesh.polygons.size();
         for (int polygonInd = 0; polygonInd < nPolygons; ++polygonInd) {
             List<Integer> vertexIndices = mesh.polygons.get(polygonInd).getVertexIndices();
@@ -134,12 +135,8 @@ public class RenderEngine {
             for (int i = 0; i < 3; i++) {
                 int vertexIndex = vertexIndices.get(i);
                 Vector3f vertex = mesh.vertices.get(vertexIndex);
-                javax.vecmath.Vector3f vertexVecmath = new javax.vecmath.Vector3f(
-                        vertex.getX(),
-                        vertex.getY(),
-                        vertex.getZ());
-                javax.vecmath.Vector3f projected = multiplyMatrix4ByVector3(modelViewProjectionMatrix, vertexVecmath);
-                Point2f resultPoint = vertexToPoint(projected, width, height);
+                Vector3f projected = transformToNdc(modelViewProjectionMatrix, vertex);
+                Vector2f resultPoint = vertexToPoint(projected, width, height);
 
                 Vector2f texCoord = null;
                 if (hasTexture) {
@@ -151,18 +148,18 @@ public class RenderEngine {
                 if (hasNormals) {
                     int normalIndex = normalIndices.get(i);
                     Vector3f normalLocal = mesh.normals.get(normalIndex);
-                    javax.vecmath.Vector3f normalVecmath = new javax.vecmath.Vector3f(
+                    Vector4f normalWorld = modelMatrix.mult(new Vector4f(
                             normalLocal.getX(),
                             normalLocal.getY(),
-                            normalLocal.getZ());
-                    javax.vecmath.Vector3f normalWorld = multiplyMatrix4ByVector3(modelMatrix, normalVecmath);
-                    normal = new Vector3f(normalWorld.x, normalWorld.y, normalWorld.z).normalize();
+                            normalLocal.getZ(),
+                            0.0f));
+                    normal = new Vector3f(normalWorld.getX(), normalWorld.getY(), normalWorld.getZ()).normalize();
                 }
 
                 vertices[i] = new Rasterizer.Vertex(
-                        resultPoint.x,
-                        resultPoint.y,
-                        projected.z,
+                        resultPoint.getX(),
+                        resultPoint.getY(),
+                        projected.getZ(),
                         vertex,
                         normal,
                         texCoord);
@@ -181,6 +178,7 @@ public class RenderEngine {
                     lightPos);
 
             if (drawWireframe) {
+                // Ксюня: поверх заливаемой модели рисуем каркас (пункт 15).
                 Rasterizer.rasterizeLine(vertices[0], vertices[1], width, height, colorBuffer, depthBuffer, 0xFFFFFFFF);
                 Rasterizer.rasterizeLine(vertices[1], vertices[2], width, height, colorBuffer, depthBuffer, 0xFFFFFFFF);
                 Rasterizer.rasterizeLine(vertices[2], vertices[0], width, height, colorBuffer, depthBuffer, 0xFFFFFFFF);
